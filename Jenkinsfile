@@ -49,13 +49,13 @@ pipeline {
         stage('4. Testar conexao com o FOLIO') {
             steps {
                 sh '''
-                    docker run --rm --env-file "$HOST_WORKSPACE/config/.env" \
-                        -v "$HOST_WORKSPACE":/src -w /src python:3.12-slim sh -c \
-                        "pip install --quiet -r requirements.txt && \
-                         python -c \\"from lib.folio import conectar; conectar(); print('Conexao OK')\\""
-                '''
-            }
-        }
+                    docker run --rm --env-file "$PWD/config/.env" \
+                    -v "$HOST_WORKSPACE":/src -w /src python:3.12-slim sh -c \
+                    "pip install --quiet -r requirements.txt && \
+                    python -c \\"from lib.folio import conectar; conectar(); print('Conexao OK')\\""
+                    '''
+    }
+}
 
         stage('5. Construir a imagem') {
             steps {
