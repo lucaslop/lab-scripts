@@ -94,8 +94,7 @@ def main() -> int:
     print()
 
     DIR_SAIDA.mkdir(parents=True, exist_ok=True)
-    nome_arquivo = agora.strftime("%d-%m-%Y-%H-%M-%S.csv")
-    arquivo = DIR_SAIDA / nome_arquivo
+    arquivo = DIR_SAIDA / f"acervo_{agora.strftime('%d-%m-%Y-%H-%M-%S')}.csv"
     novo = not arquivo.exists()
     with arquivo.open("a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)

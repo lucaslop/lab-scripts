@@ -98,7 +98,7 @@ def main() -> int:
 
     if args.csv:
         DIR_SAIDA.mkdir(parents=True, exist_ok=True)
-        carimbo = datetime.now().strftime("%Y%m%d_%H%M%S")
+        carimbo = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
         arquivo = DIR_SAIDA / f"busca_{args.tipo}_{carimbo}.csv"
         with arquivo.open("w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
