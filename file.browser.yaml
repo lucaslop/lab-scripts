@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: file-browser
+  namespace: adm-lab-folio
+spec:
+  containers:
+    - name: file-browser
+      image: python:3.12-slim
+      command: ["python", "-m", "http.server", "8000", "--directory", "/dados"]
+      ports:
+        - containerPort: 8000
+      volumeMounts:
+        - name: dados
+          mountPath: /dados
+  volumes:
+    - name: dados
+      persistentVolumeClaim:
+        claimName: lab-folio-dados
