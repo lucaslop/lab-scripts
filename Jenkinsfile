@@ -9,6 +9,7 @@ pipeline {
         REGISTRY  = 'localhost:5000'          // registry local do laboratório
         IMAGEM    = 'lab-folio'
         TAG       = "${env.BUILD_NUMBER}"
+        HOST_WORKSPACE = '/var/lib/docker/volumes/d38d71be9a6b1e11c1988ca9f30c77f032fce2c4d4923ad9eda2355710ed6b98/_data/workspace/lab-folio-scripts'
     }
 
     options {
