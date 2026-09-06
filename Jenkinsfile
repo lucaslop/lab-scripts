@@ -61,7 +61,7 @@ pipeline {
             steps {
                 sh """
                     docker build -t ${REGISTRY}/${IMAGEM}:${TAG} \
-                                 -t ${REGISTRY}/${IMAGEM}:latest ${HOST_WORKSPACE}
+                    -t ${REGISTRY}/${IMAGEM}:latest .
                 """
             }
         }
