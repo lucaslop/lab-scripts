@@ -6,9 +6,9 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY  = 'localhost:5000'          // registry local do laboratório
-        IMAGEM    = 'lab-folio'
-        TAG       = "${env.BUILD_NUMBER}"
+        REGISTRY       = 'localhost:5000'          // registry local do laboratório
+        IMAGEM         = 'lab-folio'
+        TAG            = "${env.BUILD_NUMBER}"
         HOST_WORKSPACE = '/var/lib/docker/volumes/d38d71be9a6b1e11c1988ca9f30c77f032fce2c4d4923ad9eda2355710ed6b98/_data/workspace/lab-folio-scripts'
     }
 
@@ -29,8 +29,6 @@ pipeline {
 
         stage('2. Verificar segredos') {
             steps {
-                // Falha o build se alguem commitou um .env por engano.
-                // No Senado esta etapa vale ouro.
                 sh '''
                     if git ls-files | grep -E "(^|/)\\.env$"; then
                         echo "ERRO: arquivo .env versionado!"
@@ -43,19 +41,16 @@ pipeline {
 
         stage('3. Validar sintaxe') {
             steps {
-                sh 'docker run --rm -v "$PWD":/src -w /src python:3.12-slim \
+                sh 'docker run --rm -v "$HOST_WORKSPACE":/src -w /src python:3.12-slim \
                         python -m compileall -q lib scripts && echo "Sintaxe OK"'
             }
         }
 
         stage('4. Testar conexao com o FOLIO') {
             steps {
-                // Teste de fumaca real: loga na API de demonstracao.
-                // Se o FOLIO estiver fora do ar ou a credencial mudou,
-                // o build para aqui em vez de publicar uma imagem quebrada.
                 sh '''
-                    docker run --rm --env-file config/.env \
-                        -v "$PWD":/src -w /src python:3.12-slim sh -c \
+                    docker run --rm --env-file "$HOST_WORKSPACE/config/.env" \
+                        -v "$HOST_WORKSPACE":/src -w /src python:3.12-slim sh -c \
                         "pip install --quiet -r requirements.txt && \
                          python -c \\"from lib.folio import conectar; conectar(); print('Conexao OK')\\""
                 '''
@@ -66,7 +61,7 @@ pipeline {
             steps {
                 sh """
                     docker build -t ${REGISTRY}/${IMAGEM}:${TAG} \
-                                 -t ${REGISTRY}/${IMAGEM}:latest .
+                                 -t ${REGISTRY}/${IMAGEM}:latest ${HOST_WORKSPACE}
                 """
             }
         }
